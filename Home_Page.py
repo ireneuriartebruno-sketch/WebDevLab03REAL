@@ -9,7 +9,7 @@ st.title("Web Development Lab03")
 st.header("CS 1301")
 st.subheader("Team 60, Web Development - Section A")
 st.subheader("FruitWise: Choose the Healthy Lifestyle")
-st.subheader("Irene Uriarte, Matthew Townsned")
+st.subheader("Irene Uriarte, Matthew Townsend")
 
 st.image("Images/fruit.jpg", use_container_width=True)
 
