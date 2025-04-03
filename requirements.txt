@@ -1,5 +1,4 @@
 matplotlib.pyplot
-pandas
 streamlit
 google-generativeai
 requests
