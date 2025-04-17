@@ -2,3 +2,5 @@ matplotlib
 streamlit
 google-generativeai
 requests
+google-genai
+
