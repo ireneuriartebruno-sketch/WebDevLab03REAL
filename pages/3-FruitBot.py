@@ -28,34 +28,35 @@ st.subheader("Chat History")
 for msg in st.session_state.chat_history:
     role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
     st.markdown(f"**{role}:** {msg['content']}")
-with st.container():
-    user_input = st.text_input("Any more Questions About Fruits?", key = "input_box")
-    if user_input:
-        st.session_state.chat_history.append({"role": "user", "content": user_input})
+    
+user_input = st.text_area("Any more Questions About Fruits?", key="input_box", height=50)
+    
+if st.button("Send") and user_input.strip():
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-        fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
+    fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
                             for fruit in fruit_data[:10]])
 
-        prompt = f"""
-        You are a helpful fruit expert. Use the following fruit data to answer the user's question.
+    prompt = f"""
+    You are a helpful fruit expert. Use the following fruit data to answer the user's question.
     
-        Fruit Data:
-        {fruit_facts}
+    Fruit Data:
+    {fruit_facts}
 
-        Chat History:
-        {''.join([f"{m['role']}: {m['content']}\n" for m in st.session_state.chat_history])}
+    Chat History:
+    {''.join([f"{m['role']}: {m['content']}\n" for m in st.session_state.chat_history])}
         
-        User Question:
-        {user_input}
-        """
+    User Question:
+    {user_input}
+    """
     
-        try:
-            response = client.generate_content(prompt)
-            reply = response.text.strip()
-        except Exception as e:
-            reply = f"❌ Gemini error: {e}"
+     try:
+        response = client.generate_content(prompt)
+        reply = response.text.strip()
+    except Exception as e:
+        reply = f"❌ Gemini error: {e}"
 
-        st.session_state.chat_history.append({"role": "assistant", "content": reply})
+    st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
     
 
