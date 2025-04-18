@@ -79,8 +79,7 @@ with st.container():
         # Save assistant message
         st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
-        # Optional: scroll to bottom on new message
-        st.experimental_rerun()
+
 
 
     
