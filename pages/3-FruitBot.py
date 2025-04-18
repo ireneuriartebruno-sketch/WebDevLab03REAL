@@ -43,11 +43,12 @@ if st.button("Send") and user_input.strip():
     Fruit Data: {fruit_facts}
     User Question: {user_input}
     """
-    chat_history = [{'role': m['role'], 'parts': [m['content']]} for m in st.session_state.chat_history]
-    chat = st.session_state.chat_session
-    chat = chat.send_message(prompt, history=chat_history)
-    
-    reply = chat.text.strip()
+    try: 
+        chat = client.start_chat(history=[{"role": m["role"], "parts": [m["content"]]} for m in st.session_state.chat_history])
+        response = chat.send_message(prompt)
+        reply = response.text.strip()
+    except Exception as e:
+        reply = f"❌ Gemini error: {e}"
     st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
     
