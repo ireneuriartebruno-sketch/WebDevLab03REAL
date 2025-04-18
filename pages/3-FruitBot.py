@@ -1,29 +1,36 @@
 import streamlit as st
 import requests
-import google.generativeai
+import google.generativeai as genai
 
-# --- Set Page Info ---
+# --- Page Setup ---
 st.set_page_config(page_title="FruitBot 🍓", page_icon="🍍")
 st.title("🍍 FruitBot - Ask Me About Fruits!")
+st.markdown("Ask anything related to fruits! Powered by [Fruityvice](https://www.fruityvice.com).")
 
-# --- Load Gemini API Key from Secrets ---
+# --- Load Gemini API key from secrets ---
 try:
-    api_key = st.secrets["key"]
-    client = Client(api_key=key)
+    api_key = st.secrets["google_gemini_api_key"]["key"]
+    genai.configure(api_key=api_key)
 except Exception as e:
     st.error("❌ Could not load Gemini API key. Make sure it's set in .streamlit/secrets.toml")
     st.stop()
 
-# --- Fetch Fruit Data ---
-@st.cache
+# --- Load the Gemini Model ---
+try:
+    model = genai.GenerativeModel("gemini-pro")
+except Exception as e:
+    st.error(f"❌ Error initializing Gemini model: {e}")
+    st.stop()
+
+# --- Fetch Fruit Data from Fruityvice API ---
+@st.cache_data
 def fetch_fruit_data():
     try:
-        url = "https://www.fruityvice.com/api/fruit/all"
-        response = requests.get(url)
+        response = requests.get("https://www.fruityvice.com/api/fruit/all")
         response.raise_for_status()
         return response.json()
     except Exception as e:
-        st.error(f"⚠️ Could not fetch fruit data: {e}")
+        st.error(f"⚠️ Failed to fetch fruit data: {e}")
         return []
 
 fruit_data = fetch_fruit_data()
@@ -45,18 +52,18 @@ with st.form("chat_form", clear_on_submit=True):
 
 # --- Handle Submission ---
 if submitted and user_input.strip():
-    # Add user message to history
+    # Add user message to chat history
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-    # Prepare context (limited for performance)
+    # Prepare fruit facts (limited to 10 fruits for brevity)
     fruit_facts = ""
-    for fruit in fruit_data[:10]:  # Limit to 10 fruits
+    for fruit in fruit_data[:10]:
         name = fruit.get("name", "Unknown")
         nutrition = fruit.get("nutritions", {})
         nutrition_str = ", ".join(f"{k}: {v}" for k, v in nutrition.items())
         fruit_facts += f"{name}: {nutrition_str}\n"
 
-    # Prompt to Gemini
+    # Compose prompt
     prompt = f"""
 You are a helpful fruit expert. Use the following fruit data to answer the user's question.
 
@@ -67,13 +74,13 @@ User Question:
 {user_input}
 """
 
-    # Get Gemini response
+    # Get response from Gemini
     try:
-        response = client.generate_content(prompt)
-        reply = getattr(response, "text", "Sorry, I couldn't generate a response.").strip()
+        response = model.generate_content(prompt)
+        reply = response.text.strip()
     except Exception as e:
-        reply = f"❌ Error from Gemini: {e}"
+        reply = f"❌ Gemini error: {e}"
 
-    # Add Gemini reply to history and rerun
+    # Save assistant reply and rerun
     st.session_state.chat_history.append({"role": "assistant", "content": reply})
     st.experimental_rerun()
