@@ -24,13 +24,16 @@ fruit_data = fetch_fruit_data()
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+st.subheader("Chat History")
+for msg in st.session_state.chat_history:
+    role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
+    st.markdown(f"**{role}:** {msg['content']}")
+with st.container():
+    user_input = st.text_input("Any more Questions About Fruits?", key = "input_box")
+    if user_input:
+        st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-user_input = st.text_input("Any more Questions About Fruits?")
-
-if user_input:
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
-
-    fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
+        fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
                             for fruit in fruit_data[:10]])
 
     prompt = f"""
@@ -38,12 +41,14 @@ if user_input:
     
     Fruit Data:
     {fruit_facts}
-    
+
+    Chat History:
+        {''.join([f"{m['role']}: {m['content']}\n" for m in st.session_state.chat_history])}
+        
     User Question:
     {user_input}
     """
-
-   
+    
     try:
         response = client.generate_content(prompt)
         reply = response.text.strip()
@@ -52,9 +57,6 @@ if user_input:
 
     st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
-st.subheader("🧠 Chat History")
-for msg in st.session_state.chat_history:
-    role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
-    st.markdown(f"**{role}:** {msg['content']}")
+    st.experimental_rerun()
 
 
