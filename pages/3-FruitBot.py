@@ -50,7 +50,7 @@ if st.button("Send") and user_input.strip():
     {user_input}
     """
     
-     try:
+    try:
         response = client.generate_content(prompt)
         reply = response.text.strip()
     except Exception as e:
