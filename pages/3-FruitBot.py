@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-import google-generativeai
+import google.generativeai
 
 # Page setup
 st.set_page_config(page_title="Fruit Test", page_icon="🍓")
