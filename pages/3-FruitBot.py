@@ -26,7 +26,7 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 st.subheader("Chat History")
 
-st.container()
+
 
     
 user_input = st.text_area("Any more Questions About Fruits?", height=68)
