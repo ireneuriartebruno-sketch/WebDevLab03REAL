@@ -8,7 +8,7 @@ st.title("🍍 FruitBot - Ask Me About Fruits!")
 
 # --- Load Gemini API Key from Secrets ---
 try:
-    api_key = st.secrets["google_gemini_api_key"]["key"]
+    api_key = st.secrets["key"]
     client = Client(api_key=api_key)
 except Exception as e:
     st.error("❌ Could not load Gemini API key. Make sure it's set in .streamlit/secrets.toml")
