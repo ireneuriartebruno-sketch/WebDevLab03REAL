@@ -39,17 +39,9 @@ if st.button("Send") and user_input.strip():
 
     prompt = f"""
     You are a helpful fruit expert. Use the following fruit data to answer the user's question.
-    
-    Fruit Data:
-    {fruit_facts}
-
-    Chat History:
-    {''.join([f"{m['role']}: {m['content']}\n" for m in st.session_state.chat_history])}
-        
-    User Question:
-    {user_input}
+    Fruit Data: {fruit_facts}
+    User Question: {user_input}
     """
-    
     try:
         response = client.generate_content(prompt)
         reply = response.text.strip()
