@@ -36,27 +36,27 @@ with st.container():
         fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
                             for fruit in fruit_data[:10]])
 
-    prompt = f"""
-    You are a helpful fruit expert. Use the following fruit data to answer the user's question.
+        prompt = f"""
+        You are a helpful fruit expert. Use the following fruit data to answer the user's question.
     
-    Fruit Data:
-    {fruit_facts}
+        Fruit Data:
+        {fruit_facts}
 
-    Chat History:
+        Chat History:
         {''.join([f"{m['role']}: {m['content']}\n" for m in st.session_state.chat_history])}
         
-    User Question:
-    {user_input}
-    """
+        User Question:
+        {user_input}
+        """
     
-    try:
-        response = client.generate_content(prompt)
-        reply = response.text.strip()
-    except Exception as e:
-        reply = f"❌ Gemini error: {e}"
+        try:
+            response = client.generate_content(prompt)
+            reply = response.text.strip()
+        except Exception as e:
+            reply = f"❌ Gemini error: {e}"
 
-    st.session_state.chat_history.append({"role": "assistant", "content": reply})
+        st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
-    st.experimental_rerun()
+    
 
 
