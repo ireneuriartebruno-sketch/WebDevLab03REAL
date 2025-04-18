@@ -55,6 +55,7 @@ for fruit in fruit_data[:10]])
 st.subheader("Chat History")
 
 with st.container():
+    # Start the chat box container
     html = """
     <style>
         .chat-box {
@@ -62,13 +63,16 @@ with st.container():
             overflow-y: auto;
             display: flex;
             flex-direction: column-reverse;
+            scroll-behavior: smooth;
             border: 1px solid #ccc;
             border-radius: 6px;
             padding: 10px;
             background-color: #f9f9f9;
         }
         .chat-message {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
         }
         .user { color: #333; }
         .bot { color: #1a73e8; }
@@ -76,6 +80,7 @@ with st.container():
     <div class="chat-box">
     """
 
+    # Add chat messages
     for msg in reversed(st.session_state.chat_history):
         role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
         css_class = "user" if msg["role"] == "user" else "bot"
@@ -87,8 +92,5 @@ with st.container():
 
     html += "</div>"
 
+    # Display the full HTML
     st.markdown(html, unsafe_allow_html=True)
-
-    
-
-
