@@ -2,19 +2,17 @@ import streamlit as st
 import requests
 import google.generativeai as genai
 
+# --- Page Setup ---
 st.set_page_config(page_title="FruitBot 🍓", page_icon="🍍")
 st.title("🍍 FruitBot - Ask Me About Fruits!")
 st.markdown("Ask anything related to fruits! Powered by [Fruityvice](https://www.fruityvice.com).")
 
-
-api_key = st.secrets.get("google_gemini_api_key", {}).get("key", "")
-if not api_key:
-    st.error("❌ Could not load Gemini API key.")
-    st.stop()
-
+# --- Load Gemini API key from secrets ---
+api_key = st.secrets["key"]  # Access the key directly from Streamlit secrets
 genai.configure(api_key=api_key)
 client = genai.GenerativeModel("gemini-1.5-flash")
 
+# --- Fetch Fruit Data from Fruityvice API ---
 @st.cache_data
 def fetch_fruit_data():
     try:
@@ -27,11 +25,14 @@ def fetch_fruit_data():
 
 fruit_data = fetch_fruit_data()
 
+# --- Session State for Chat ---
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
+# --- Input Form ---
 user_input = st.text_input("Any more Questions About Fruits?")
 
+# --- Handle Submission ---
 if user_input:
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
@@ -39,6 +40,7 @@ if user_input:
     fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
                             for fruit in fruit_data[:10]])
 
+    # Compose prompt
     prompt = f"""
     You are a helpful fruit expert. Use the following fruit data to answer the user's question.
     
@@ -49,14 +51,17 @@ if user_input:
     {user_input}
     """
 
+    # Get response from Gemini
     try:
         response = client.generate_content(prompt)
         reply = response.text.strip()
     except Exception as e:
         reply = f"❌ Gemini error: {e}"
 
+    # Save assistant reply
     st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
+# --- Display Chat History ---
 st.subheader("🧠 Chat History")
 for msg in st.session_state.chat_history:
     role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
