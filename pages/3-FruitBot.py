@@ -25,9 +25,7 @@ fruit_data = fetch_fruit_data()
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 st.subheader("Chat History")
-for msg in st.session_state.chat_history:
-    role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
-    st.markdown(f"**{role}:** {msg['content']}")
+
     
 user_input = st.text_area("Any more Questions About Fruits?", height=68)
 if "chat_session" not in st.session_state:
@@ -50,6 +48,10 @@ for fruit in fruit_data[:10]])
     except Exception as e:
         reply = f"❌ Gemini error: {e}"
     st.session_state.chat_history.append({"role": "assistant", "content": reply})
+    
+for msg in st.session_state.chat_history:
+    role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
+    st.markdown(f"**{role}:** {msg['content']}")
 
     
     
