@@ -6,7 +6,7 @@ st.set_page_config(page_title="FruitBot 🍓", page_icon="🍍")
 st.title("🍍 FruitBot - Ask Me About Fruits!")
 st.markdown("Ask anything related to fruits! Powered by [Fruityvice](https://www.fruityvice.com).")
 
-api_key = st.secrets["key"]  # Access the key directly from Streamlit secrets
+api_key = st.secrets["key"]  
 genai.configure(api_key=api_key)
 client = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -29,7 +29,7 @@ for msg in st.session_state.chat_history:
     role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
     st.markdown(f"**{role}:** {msg['content']}")
     
-user_input = st.text_area("Any more Questions About Fruits?", height=50)
+user_input = st.text_area("Any more Questions About Fruits?", height=68)
     
 if st.button("Send") and user_input.strip():
     st.session_state.chat_history.append({"role": "user", "content": user_input})
