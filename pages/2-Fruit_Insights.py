@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from google.genai import Client
 
-api_key = st.secrets["google_gemini_api_key"]["key"]
+api_key = st.secrets["key"]
 client = Client(api_key = api_key)
 
 def fetchFruitData(fruit_name):
