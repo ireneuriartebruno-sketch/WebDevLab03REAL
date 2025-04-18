@@ -36,7 +36,7 @@ if st.button("Send") and user_input.strip():
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
     fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
-                            for fruit in fruit_data[:10]])
+for fruit in fruit_data[:10]])
 
     prompt = f"""
     You are a helpful fruit expert. Use the following fruit data to answer the user's question.
