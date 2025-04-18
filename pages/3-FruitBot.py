@@ -30,8 +30,9 @@ for msg in st.session_state.chat_history:
     st.markdown(f"**{role}:** {msg['content']}")
     
 user_input = st.text_area("Any more Questions About Fruits?", height=68)
-    
-if user_input.strip():
+if "chat_session" not in st.session_state:
+    st.session_state.chat_session = client.start_chat()
+if st.button("Send") and user_input.strip():
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
     fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
@@ -42,14 +43,14 @@ if user_input.strip():
     Fruit Data: {fruit_facts}
     User Question: {user_input}
     """
-    try:
-        response = client.generate_content(prompt)
-        reply = response.text.strip()
-    except Exception as e:
-        reply = f"❌ Gemini error: {e}"
-
+    chat_history = [{'role': m['role'], 'parts': [m['content']]} for m in st.session_state.chat_history]
+    chat = st.session_state.chat_session
+    chat = chat.send_message(prompt, history=chat_history)
+    
+    reply = chat.text.strip()
     st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
+    
     
 
 
