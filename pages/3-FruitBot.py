@@ -12,7 +12,7 @@ st.title("🍍 Ask Me About Fruits!")
 st.markdown("Ask anything related to fruits! Data is powered by [Fruityvice](https://www.fruityvice.com).")
 
 # --- Fetch fruit data from API ---
-@st.cache_data
+@st.cache
 def get_fruit_data():
     url = "https://www.fruityvice.com/api/fruit/all"
     try:
@@ -25,28 +25,32 @@ def get_fruit_data():
 
 fruit_data = get_fruit_data()
 
-# --- Chat Input ---
-user_input = st.chat_input("Any more Questions About Fruits?")
-
-# --- Session State ---
+# --- Session State Initialization ---
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
 # --- Display previous messages ---
+st.subheader("Chat History")
 for entry in st.session_state.chat_history:
-    with st.chat_message(entry["role"]):
-        st.markdown(entry["content"])
+    if entry["role"] == "user":
+        st.markdown(f"**You:** {entry['content']}")
+    else:
+        st.markdown(f"**FruitBot:** {entry['content']}")
 
-# --- Handle user question ---
+# --- Chat Input ---
+user_input = st.text_input("Any more Questions About Fruits?", key="user_input")
+
+# --- Handle user input ---
 if user_input:
-    # Show user message
-    with st.chat_message("user"):
-        st.markdown(user_input)
+    # Add user message to history
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-    # Prepare the prompt with fruit data
+    # Prepare fruit facts string
     fruit_facts = "\n".join([f"{fruit['name']}: {fruit['nutritions']}" for fruit in fruit_data])
-    prompt = f"""You are a helpful fruit expert bot. Based on the following data about fruits, answer the user's question.
+
+    # Prompt for Gemini
+    prompt = f"""
+You are a helpful fruit expert bot. Based on the following data about fruits, answer the user's question.
 
 Fruit Data:
 {fruit_facts}
@@ -54,13 +58,13 @@ Fruit Data:
 Question: {user_input}
 """
 
-    # Get response from Gemini
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            try:
-                response = client.generate_content(prompt)
-                reply = response.text.strip()
-            except Exception as e:
-                reply = f"❌ Error fetching response: {e}"
-            st.markdown(reply)
-            st.session_state.chat_history.append({"role": "assistant", "content": reply})
+    # Call Gemini API
+    try:
+        response = client.generate_content(prompt)
+        reply = response.text.strip()
+    except Exception as e:
+        reply = f"❌ Error fetching response: {e}"
+
+    # Add reply to history and clear input
+    st.session_state.chat_history.append({"role": "assistant", "content": reply})
+    st.experimental_rerun()
