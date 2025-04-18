@@ -57,18 +57,39 @@ st.subheader("Chat History")
 with st.container():
     st.markdown(
         """
-        <div style="height: 50px; overflow-y: scroll; display: flex; flex-direction: column-reverse; padding-right: 10px;">
+        <style>
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+            padding-right: 10px;
+            scroll-behavior: smooth;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+        .chat-message {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        </style>
+        <div class="chat-box">
         """,
         unsafe_allow_html=True
     )
 
     for msg in reversed(st.session_state.chat_history):
         role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
-        st.markdown(f"**{role}:** {msg['content']}")
+        st.markdown(f"""
+        <div class="chat-message">
+            <strong>{role}:</strong> {msg['content']}
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
-
-
 
     
 
