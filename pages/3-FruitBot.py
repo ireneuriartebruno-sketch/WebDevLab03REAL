@@ -27,11 +27,7 @@ if "chat_history" not in st.session_state:
 st.subheader("Chat History")
 
     
-user_input = st.text_area("Any more Questions About Fruits?", height=68)
-if "chat_session" not in st.session_state:
-    st.session_state.chat_session = client.start_chat()
-if st.button("Send") and user_input.strip():
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
+
 
     fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
 for fruit in fruit_data[:10]])
@@ -53,7 +49,11 @@ for msg in st.session_state.chat_history:
     role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
     st.markdown(f"**{role}:** {msg['content']}")
 
-    
+user_input = st.text_area("Any more Questions About Fruits?", height=68)
+if "chat_session" not in st.session_state:
+    st.session_state.chat_session = client.start_chat()
+if st.button("Send") and user_input.strip():
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
     
 
 
