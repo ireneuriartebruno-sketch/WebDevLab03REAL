@@ -52,10 +52,9 @@ for fruit in fruit_data[:10]])
         reply = f"❌ Gemini error: {e}"
     st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
-with st.container()
-    for msg in st.session_state.chat_history:
-        role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
-        st.markdown(f"**{role}:** {msg['content']}")
+for msg in st.session_state.chat_history:
+    role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
+    st.markdown(f"**{role}:** {msg['content']}")
 
 
     
