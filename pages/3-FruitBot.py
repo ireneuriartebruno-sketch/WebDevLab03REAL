@@ -11,15 +11,9 @@ st.markdown("Ask anything related to fruits! Powered by [Fruityvice](https://www
 try:
     api_key = st.secrets["google_gemini_api_key"]["key"]
     genai.configure(api_key=api_key)
+    client = genai.GenerativeModel("gemini-1.5-flash")
 except Exception as e:
     st.error("❌ Could not load Gemini API key. Make sure it's set in .streamlit/secrets.toml")
-    st.stop()
-
-# --- Load the Gemini Model ---
-try:
-    model = genai.GenerativeModel("gemini-pro")
-except Exception as e:
-    st.error(f"❌ Error initializing Gemini model: {e}")
     st.stop()
 
 # --- Fetch Fruit Data from Fruityvice API ---
