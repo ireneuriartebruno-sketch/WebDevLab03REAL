@@ -31,7 +31,7 @@ for msg in st.session_state.chat_history:
     
 user_input = st.text_area("Any more Questions About Fruits?", height=68)
     
-if st.button("Send") and user_input.strip():
+if user_input.strip():
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
     fruit_facts = "\n".join([f"{fruit['name']}: {', '.join(f'{k}: {v}' for k, v in fruit['nutritions'].items())}" 
