@@ -54,9 +54,19 @@ for fruit in fruit_data[:10]])
 
 st.subheader("Chat History")
 
-for msg in reversed(st.session_state.chat_history):
-    role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
-    st.markdown(f"**{role}:** {msg['content']}")
+with st.container():
+    st.markdown(
+        """
+        <div style="height: 50px; overflow-y: scroll; display: flex; flex-direction: column-reverse; padding-right: 10px;">
+        """,
+        unsafe_allow_html=True
+    )
+
+    for msg in reversed(st.session_state.chat_history):
+        role = "🧑 You" if msg["role"] == "user" else "🤖 FruitBot"
+        st.markdown(f"**{role}:** {msg['content']}")
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 
